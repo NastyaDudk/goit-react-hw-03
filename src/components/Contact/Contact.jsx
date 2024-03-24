@@ -1,24 +1,21 @@
 import css from './Contact.module.css';
+import { BsPersonFill } from "react-icons/bs";
+import { FaPhoneAlt } from "react-icons/fa";
 
-import { ImUser, ImPhone, ImUserMinus } from 'react-icons/im';
+const Contact = ( {contact, deleteContact} ) => {
+  console.log(contact)
+  return (    
+    <ul className={css.contact}>
+      <li className={css.userInfo}>
+        <span className={css.userItem}><BsPersonFill className={css.icon}/> {contact.name}</span>
+        <span className={css.userItem}><FaPhoneAlt className={css.icon}/> {contact.number}</span>
+      </li>
+      <li>
+        <button onClick={() => deleteContact(contact.id)} title="Click to delete contact">Delete</button>
+      </li>
+    </ul>
+  )
+}
 
-const Contact = ({ data: { id, name, number }, onDelete }) => {
-  return (
-    <div className={css.container}>
-      <p className={css.name}>
-        <ImUser className={css.icon} />
-        {name}
-      </p>
-      <p>
-        <ImPhone className={css.icon} />
-        {number}
-      </p>
-      <button className={css.button} onClick={() => onDelete(id)}>
-        <ImUserMinus />
-      </button>
-    </div>
-  );
-};
+export default Contact
 
-
-export default Contact;

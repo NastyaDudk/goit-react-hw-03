@@ -1,46 +1,68 @@
-import { useState, useEffect } from 'react';
+
 import css from './App.module.css';
-
+import SearchBox from '../SearchBox/SearchBox'
+import ContactForm from "../ContactForm/ContactForm";
 import ContactList from '../ContactList/ContactList';
-import SearchBox from '../SearchBox/SearchBox';
-import ContactForm from '../ContactForm/ContactForm';
+import { useEffect, useState } from 'react';
+import { nanoid } from 'nanoid';
 
-const App = () => {
-  const [contacts, setContacts] = useState(
-    () => JSON.parse(localStorage.getItem('saved-contacts')) ?? []
-  );
 
-  const [filter, setFilter] = useState('');
 
-  useEffect(() => {
-    localStorage.setItem('saved-contacts', JSON.stringify(contacts));
-  }, [contacts]);
+const userData = [
+  {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
+  {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
+  {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
+  {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
+]
+const App = () => {    
+  const [inputValue, setInputValue] = useState("");
 
-  const filterContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
+   const [contacts, setContacts] = useState(() => {
+    const savedContacts = localStorage.getItem("savedContacts");
+    if (!savedContacts) return userData;
+    const parsedContacts = JSON.parse(savedContacts);
+    return parsedContacts;
+   });  
+   useEffect(() => {
+    localStorage.setItem("saved-contacts", JSON.stringify(contacts));
+   }, [contacts]);
+     
 
-  const addContact = newContact => {
-    setContacts(prevContacts => {
-      return [...prevContacts, newContact];
-    });
+const handleChange = (value) => {   
+  setInputValue(value)   
   };
-
-  const deleteContact = contactId => {
-    setContacts(prevContact => {
-      return prevContact.filter(contact => contact.id !== contactId);
-    });
-  };
-
-    return (
-    <div className={css.container}>
-      <h1 className={css.title}>Phonebook</h1>
-      <ContactForm onAdd={addContact} />
-      <SearchBox value={filter} onFilter={setFilter} />
-      <ContactList contacts={filterContacts} onDelete={deleteContact} />
-    </div>
-  );
+const getVisibleContacts = () => {    
+    return contacts.filter(({ name }) => name.toLowerCase().includes(inputValue.toLowerCase().trim()));
 };
 
+const deleteContact = deletedId => {
+  setContacts(prev => prev.filter(({ id }) => id !== deletedId));
+ };
+ 
 
-export default App;
+const addContact = (contactData) => {
+  const finalContact = {
+    ...contactData,
+    id: nanoid(),
+  };
+  setContacts(prev => [...prev, finalContact]);
+};
+  return (
+    <div className={css.pageStyle}>
+      <h1 className={css.formTitle}>Phonebook</h1>
+      <ContactForm 
+      addContact={addContact}/>
+      <SearchBox 
+      handleChange={handleChange}
+      inputValue={inputValue}/>
+      <ContactList 
+      userData={userData}
+      inputValue={inputValue}
+      contacts={getVisibleContacts()}
+      deleteContact={deleteContact}
+      />      
+    </div>
+  );};
+export default App
+
+
