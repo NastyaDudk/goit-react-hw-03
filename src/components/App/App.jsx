@@ -18,13 +18,13 @@ const App = () => {
   const [inputValue, setInputValue] = useState("");
 
    const [contacts, setContacts] = useState(() => {
-    const savedContacts = localStorage.getItem("savedContacts");
+    const savedContacts = localStorage.getItem("saved-сontacts");
     if (!savedContacts) return userData;
     const parsedContacts = JSON.parse(savedContacts);
     return parsedContacts;
    });  
    useEffect(() => {
-    localStorage.setItem("saved-contacts", JSON.stringify(contacts));
+    localStorage.setItem("savedContacts", JSON.stringify(contacts));
    }, [contacts]);
      
 
